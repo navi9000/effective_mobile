@@ -2,7 +2,6 @@
   "name": "effective_mobile",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "dev": "nodemon",
     "build": "tsc",
@@ -13,11 +12,15 @@
   "license": "ISC",
   "packageManager": "pnpm@10.14.0",
   "dependencies": {
+    "cors": "^2.8.6",
     "express": "^5.2.1",
     "sequelize": "^6.37.8"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "nodemon": "^3.1.14",
+    "ts-node": "^10.9.2",
     "typescript": "^6.0.3"
   }
 }
