@@ -5,6 +5,35 @@ import { RequestWithUser } from "../utils/types"
 
 const router = Router()
 
+router.get("/", authMiddleware, async (req: RequestWithUser, res) => {
+  const { role } = req.user!
+  if (role !== "admin") {
+    return res.status(403).json({
+      is_success: false,
+      errors: ["Unauthorized"],
+    })
+  }
+
+  try {
+    const users = await User.findAll({
+      attributes: { exclude: ["password"] },
+      order: [["createdAt", "ASC"]],
+    })
+
+    return res.json({
+      is_success: true,
+      data: {
+        users,
+      },
+    })
+  } catch (error) {
+    return res.status(500).json({
+      is_success: false,
+      errors: [error],
+    })
+  }
+})
+
 router.get("/:userId", authMiddleware, async (req: RequestWithUser, res) => {
   const { id, role } = req.user!
   const { userId } = req.params
@@ -20,6 +49,7 @@ router.get("/:userId", authMiddleware, async (req: RequestWithUser, res) => {
       where: {
         id: userId,
       },
+      attributes: { exclude: ["password"] },
     })
 
     if (!user) {
@@ -29,11 +59,11 @@ router.get("/:userId", authMiddleware, async (req: RequestWithUser, res) => {
       })
     }
 
-    const { password, ...rest } = user.dataValues
-
     return res.json({
       is_success: true,
-      data: rest,
+      data: {
+        user: user.dataValues,
+      },
     })
   } catch (error) {
     return res.status(500).json({
@@ -41,7 +71,44 @@ router.get("/:userId", authMiddleware, async (req: RequestWithUser, res) => {
       errors: [error],
     })
   }
-  return res.json("ok")
 })
+
+router.put(
+  "/:userId/block",
+  authMiddleware,
+  async (req: RequestWithUser, res) => {
+    const { id, role } = req.user!
+    const { userId } = req.params
+    if (role !== "admin" && id !== userId) {
+      return res.status(403).json({
+        is_success: false,
+        errors: ["Unauthorized"],
+      })
+    }
+
+    try {
+      const user = await User.update(
+        { is_active: false },
+        {
+          where: {
+            id: userId,
+          },
+        },
+      )
+
+      return res.json({
+        is_success: true,
+        data: {
+          id: userId,
+        },
+      })
+    } catch (error) {
+      return res.status(500).json({
+        is_success: false,
+        errors: [error],
+      })
+    }
+  },
+)
 
 export default router
