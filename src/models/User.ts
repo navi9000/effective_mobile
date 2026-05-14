@@ -15,7 +15,7 @@ export default function initUser(sequelize: Sequelize) {
         allowNull: false,
       },
       birth_date: {
-        type: DataTypes.DATEONLY,
+        type: DataTypes.STRING,
       },
       email: {
         type: DataTypes.STRING,
