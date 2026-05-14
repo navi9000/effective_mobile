@@ -1,11 +1,24 @@
 import server from "./server"
+import { sequelize } from "./config"
+import { SERVER_PORT } from "./config/constants"
 
-const port = 3000
+async function run() {
+  try {
+    await sequelize.authenticate()
+    console.log("Connection has been established successfully.")
 
-function run() {
-  server.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`)
-  })
+    await sequelize.sync({
+      force: false,
+      alter: false,
+      logging: false,
+    })
+
+    server.listen(SERVER_PORT, () => {
+      console.log(`Server is running at http://localhost:${SERVER_PORT}`)
+    })
+  } catch (error) {
+    console.error("Unable to connect to the database:", error)
+  }
 }
 
 run()
