@@ -1,4 +1,4 @@
-import { SignJWT } from "jose"
+import { SignJWT, jwtDecrypt } from "jose"
 import { JWT_SECRET } from "../config/constants"
 
 export async function createToken(id: string, role: "admin" | "user") {
@@ -10,4 +10,11 @@ export async function createToken(id: string, role: "admin" | "user") {
     .sign(secret)
 
   return token
+}
+
+export async function decryptToken(token: string) {
+  const secret = new TextEncoder().encode(JWT_SECRET)
+  const result = await jwtDecrypt(token, secret)
+
+  return result
 }

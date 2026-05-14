@@ -4,6 +4,7 @@ import bcrypt from "bcrypt"
 import { authenticateUserSchema, createUserSchema } from "../utils/validations"
 import { isDateValid } from "../utils/dates"
 import { createToken } from "../utils/jwt"
+import authMiddleware from "../middlewares/authMiddleware"
 
 const router = Router()
 
