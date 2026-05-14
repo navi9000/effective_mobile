@@ -3,6 +3,7 @@ import { Router } from "express"
 import bcrypt from "bcrypt"
 import { authenticateUserSchema, createUserSchema } from "../utils/validations"
 import { isDateValid } from "../utils/dates"
+import { createToken } from "../utils/jwt"
 
 const router = Router()
 
@@ -32,14 +33,12 @@ router.post("/sign-up", async (req, res) => {
       is_active: true,
     })
 
-    const { password, ...values } = user.dataValues
+    const { id, role } = user.dataValues
 
     return res.json({
       is_success: true,
       data: {
-        user: {
-          ...values,
-        },
+        token: await createToken(id, role),
       },
     })
   } catch (error) {
@@ -84,11 +83,11 @@ router.post("/sign-in", async (req, res) => {
       })
     }
 
-    const { password: _, ...rest } = user.dataValues
+    const { id, role } = user.dataValues
     return res.json({
       is_success: true,
       data: {
-        user: rest,
+        token: await createToken(id, role),
       },
     })
   } catch (error) {
