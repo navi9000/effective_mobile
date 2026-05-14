@@ -10,6 +10,8 @@ export default async function authMiddleware(
   const authHeader = req.headers["authorization"]
   const token = authHeader && authHeader.split(" ")[1]
 
+  console.log({ token })
+
   if (!token) {
     return res.status(401).json({
       is_success: false,
@@ -19,7 +21,7 @@ export default async function authMiddleware(
 
   try {
     const { payload } = await decryptToken(token)
-    console.log({ payload })
+    req.user = payload
 
     next()
   } catch (error) {

@@ -4,7 +4,6 @@ import bcrypt from "bcrypt"
 import { authenticateUserSchema, createUserSchema } from "../utils/validations"
 import { isDateValid } from "../utils/dates"
 import { createToken } from "../utils/jwt"
-import authMiddleware from "../middlewares/authMiddleware"
 
 const router = Router()
 
@@ -85,6 +84,7 @@ router.post("/sign-in", async (req, res) => {
     }
 
     const { id, role } = user.dataValues
+    console.log({ id })
     return res.json({
       is_success: true,
       data: {

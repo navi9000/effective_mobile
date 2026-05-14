@@ -1,8 +1,10 @@
-import { SignJWT, jwtDecrypt } from "jose"
+import { SignJWT, jwtDecrypt, jwtVerify } from "jose"
 import { JWT_SECRET } from "../config/constants"
+import { UserPayload } from "./types"
+
+const secret = new TextEncoder().encode(JWT_SECRET)
 
 export async function createToken(id: string, role: "admin" | "user") {
-  const secret = new TextEncoder().encode(JWT_SECRET)
   const token = await new SignJWT({ id, role })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
@@ -13,8 +15,7 @@ export async function createToken(id: string, role: "admin" | "user") {
 }
 
 export async function decryptToken(token: string) {
-  const secret = new TextEncoder().encode(JWT_SECRET)
-  const result = await jwtDecrypt(token, secret)
+  const result = await jwtVerify<UserPayload>(token, secret)
 
   return result
 }
