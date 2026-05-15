@@ -1,7 +1,10 @@
 import { Router } from "express"
 import bcrypt from "bcrypt"
-import { authenticateUserSchema, createUserSchema } from "../utils/validations"
-import { isDateValid } from "../utils/dates"
+import {
+  authenticateUserSchema,
+  createUserSchema,
+  formatValidationErrors,
+} from "../utils/validations"
 import { createToken } from "../utils/jwt"
 import { User } from "../db"
 
@@ -14,22 +17,13 @@ router.post("/sign-up", async (req, res) => {
     if (!validatedFields.success) {
       return res.status(400).json({
         is_success: false,
-        errors: validatedFields.error.issues.flatMap((err) => err.message),
-      })
-    }
-
-    const { birth_date, ...rest } = validatedFields.data
-
-    if (!isDateValid(birth_date)) {
-      return res.status(400).json({
-        is_success: false,
-        errors: ["birth_date is invalid"],
+        errors: formatValidationErrors(validatedFields.error),
       })
     }
 
     const user = await User.create({
-      ...rest,
-      password: await bcrypt.hash(rest.password, 10),
+      ...validatedFields.data,
+      password: await bcrypt.hash(validatedFields.data.password, 10),
       is_active: true,
     })
 
@@ -42,9 +36,11 @@ router.post("/sign-up", async (req, res) => {
       },
     })
   } catch (error) {
-    return res.status(400).json({
+    const message =
+      error instanceof Error ? error.message : "Internal server error"
+    return res.status(500).json({
       is_success: false,
-      errors: [error],
+      errors: [{ field: "unknown", message }],
     })
   }
 })
@@ -53,10 +49,10 @@ router.post("/sign-in", async (req, res) => {
   try {
     const validatedFields = authenticateUserSchema.safeParse(req.body)
 
-    if (validatedFields.error) {
+    if (!validatedFields.success) {
       return res.status(400).json({
         is_success: false,
-        errors: validatedFields.error.issues.flatMap((err) => err.message),
+        errors: formatValidationErrors(validatedFields.error),
       })
     }
 
@@ -71,7 +67,7 @@ router.post("/sign-in", async (req, res) => {
     if (!user) {
       return res.status(401).json({
         is_success: false,
-        errors: ["Invalid email"],
+        errors: [{ field: "email", message: "Invalid email" }],
       })
     }
 
@@ -79,7 +75,7 @@ router.post("/sign-in", async (req, res) => {
     if (!(await bcrypt.compare(password, hashedPassword))) {
       return res.status(401).json({
         is_success: false,
-        errors: ["Invalid password"],
+        errors: [{ field: "password", message: "Invalid password" }],
       })
     }
 
@@ -91,9 +87,11 @@ router.post("/sign-in", async (req, res) => {
       },
     })
   } catch (error) {
-    return res.status(400).json({
+    const message =
+      error instanceof Error ? error.message : "Internal server error"
+    return res.status(500).json({
       is_success: false,
-      errors: [error],
+      errors: [{ field: "unknown", message }],
     })
   }
 })

@@ -10,7 +10,7 @@ router.get("/", authMiddleware, async (req: RequestWithUser, res) => {
   if (role !== "admin") {
     return res.status(403).json({
       is_success: false,
-      errors: ["Unauthorized"],
+      errors: [{ field: "unknown", message: "Unauthorized" }],
     })
   }
 
@@ -27,9 +27,11 @@ router.get("/", authMiddleware, async (req: RequestWithUser, res) => {
       },
     })
   } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Internal server error"
     return res.status(500).json({
       is_success: false,
-      errors: [error],
+      errors: [{ field: "unknown", message }],
     })
   }
 })
@@ -40,7 +42,7 @@ router.get("/:userId", authMiddleware, async (req: RequestWithUser, res) => {
   if (role !== "admin" && id !== userId) {
     return res.status(403).json({
       is_success: false,
-      errors: ["Unauthorized"],
+      errors: [{ field: "unknown", message: "Unauthorized" }],
     })
   }
 
@@ -55,7 +57,7 @@ router.get("/:userId", authMiddleware, async (req: RequestWithUser, res) => {
     if (!user) {
       return res.status(404).json({
         is_success: false,
-        errors: ["User does not exist"],
+        errors: [{ field: "id", message: "User does not exist" }],
       })
     }
 
@@ -66,9 +68,11 @@ router.get("/:userId", authMiddleware, async (req: RequestWithUser, res) => {
       },
     })
   } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Internal server error"
     return res.status(500).json({
       is_success: false,
-      errors: [error],
+      errors: [{ field: "unknown", message }],
     })
   }
 })
@@ -82,7 +86,7 @@ router.put(
     if (role !== "admin" && id !== userId) {
       return res.status(403).json({
         is_success: false,
-        errors: ["Unauthorized"],
+        errors: [{ field: "unknown", message: "Unauthorized" }],
       })
     }
 
@@ -103,9 +107,11 @@ router.put(
         },
       })
     } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Internal server error"
       return res.status(500).json({
         is_success: false,
-        errors: [error],
+        errors: [{ field: "unknown", message }],
       })
     }
   },
