@@ -1,4 +1,4 @@
-import { SignJWT, jwtDecrypt, jwtVerify } from "jose"
+import { SignJWT, jwtVerify } from "jose"
 import { JWT_SECRET } from "../config/constants"
 import { UserPayload } from "./types"
 
