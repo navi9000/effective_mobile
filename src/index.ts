@@ -1,5 +1,5 @@
 import server from "./server"
-import { sequelize } from "./config"
+import { sequelize } from "./db"
 import { SERVER_PORT } from "./config/constants"
 
 async function run() {
