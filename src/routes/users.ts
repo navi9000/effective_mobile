@@ -1,7 +1,7 @@
+import { User } from "../config/index"
 import { Router } from "express"
-import authMiddleware from "@/middlewares/authMiddleware"
-import { RequestWithUser } from "@/utils/types"
-import { User } from "@/db"
+import authMiddleware from "../middlewares/authMiddleware"
+import { RequestWithUser } from "../utils/types"
 
 const router = Router()
 

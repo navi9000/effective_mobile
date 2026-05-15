@@ -1,6 +1,6 @@
 import server from "./server"
-import { sequelize } from "@/db"
-import { SERVER_PORT } from "@/config/constants"
+import { sequelize } from "./config"
+import { SERVER_PORT } from "./config/constants"
 
 async function run() {
   try {
