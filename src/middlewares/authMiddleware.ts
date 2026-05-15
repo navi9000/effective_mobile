@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express"
-import { decryptToken } from "../utils/jwt"
-import { RequestWithUser } from "../utils/types"
+import { decryptToken } from "@/utils/jwt"
+import { RequestWithUser } from "@/utils/types"
 
 export default async function authMiddleware(
   req: RequestWithUser,
@@ -9,8 +9,6 @@ export default async function authMiddleware(
 ) {
   const authHeader = req.headers["authorization"]
   const token = authHeader && authHeader.split(" ")[1]
-
-  console.log({ token })
 
   if (!token) {
     return res.status(401).json({

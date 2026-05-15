@@ -1,4 +1,4 @@
-import { env } from "../utils/env"
+import { env } from "@/utils/env"
 
 export const DB_NAME = env("DB_NAME")
 export const DB_USER = env("DB_USER")
