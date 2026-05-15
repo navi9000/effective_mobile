@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express"
-import { decryptToken } from "@/utils/jwt"
-import { RequestWithUser } from "@/utils/types"
+import { decryptToken } from "../utils/jwt"
+import { RequestWithUser } from "../utils/types"
 
 export default async function authMiddleware(
   req: RequestWithUser,
