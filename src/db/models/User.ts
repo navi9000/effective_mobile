@@ -1,6 +1,18 @@
-import { Model, Sequelize, DataTypes } from "sequelize"
+import { Model, Sequelize, DataTypes, Optional } from "sequelize"
 
-class User extends Model {}
+interface UserAttributes {
+  id: string
+  full_name: string
+  birth_date?: string
+  email: string
+  password: string
+  role: "admin" | "user"
+  is_active: boolean
+}
+
+interface UserCreationAttributes extends Omit<UserAttributes, "id"> {}
+
+class User extends Model<UserAttributes, UserCreationAttributes> {}
 
 export default function initUser(sequelize: Sequelize) {
   User.init(
