@@ -1,4 +1,4 @@
-import { User } from "../config/index"
+import { User } from "../db/index"
 import { Router } from "express"
 import bcrypt from "bcrypt"
 import { authenticateUserSchema, createUserSchema } from "../utils/validations"
